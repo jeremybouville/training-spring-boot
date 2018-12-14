@@ -1,22 +1,38 @@
 package com.ecommerce.microcommerce.dao;
 
 import com.ecommerce.microcommerce.model.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public interface ProductDao extends JpaRepository<Product, Integer> {
+public class ProductDao extends DAO<Product> {
+    public static List<Product>products=new ArrayList<>();
+    static{
+        products.add(new Product(1, new String("Ordinateur Portable"), 350));
+        products.add(new Product(2, new String("Aspirateur Robot"), 500));
+        products.add(new Product(3, new String("Table de ping pong"), 750));
+    }
 
-    Product findById(int id);
+    @Override
+    public List<Product> findAll() {
+        return products;
+    }
 
-    List<Product> findByPrixGreaterThan(int prixLimit);
+    @Override
+    public Product findById(int id) {
+        for(Product product : products){
+            if(product.getId() == id){
+                return product;
+            }
+        }
+        return null;
+    }
 
-    List<Product> findByNomLike(String recherche);
-
-    @Query("SELECT id, nom, prix FROM Product p WHERE p.prix > :prixLimit")
-    List<Product>  chercherUnProduitCher(@Param("prixLimit") int prix);
+    @Override
+    public Product save(Product obj) {
+        products.add(obj);
+        return obj;
+    }
 }

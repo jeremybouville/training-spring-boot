@@ -105,14 +105,19 @@ public class ProductController {
     }
 
     @GetMapping(value = "/AdminProduits")
-    public String calculerMargeProduit(@PathVariable int id){
-        Product produit = productDao.findById(id);
+    public String calculerMargeProduit(){
+        Iterable<Product> produits = productDao.findAll();
         int marge;
-        if(produit==null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
-        marge = produit.getPrixAchat() - produit.getPrix();
-
-
-        return produit + ":" + marge;
+        String affichage = "";
+        String newLine = System.getProperty("line.separator");
+        for (Product produit:produits){
+            if (produit == null) {
+                throw new ProduitIntrouvableException("Le produit avec l'id " + produit.getId() + " est INTROUVABLE. Écran Bleu si je pouvais.");
+            }
+            marge = produit.getPrix() - produit.getPrixAchat();
+            affichage += produit + ":" + marge + newLine;
+        }
+        return affichage;
     }
 
 

@@ -1,6 +1,6 @@
 package com.ecommerce.microcommerce.web.controller;
 
-import com.ecommerce.microcommerce.dao.ProductDao;
+import com.ecommerce.microcommerce.dao.IProductDao;
 import com.ecommerce.microcommerce.model.Product;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    private ProductDao productDao;
+    private IProductDao productDao;
 
 
     //Récupérer la liste des produits
@@ -101,6 +102,11 @@ public class ProductController {
     public List<Product>  testeDeRequetes(@PathVariable int prix) {
 
         return productDao.chercherUnProduitCher(400);
+    }
+    @GetMapping(value= "/Produits/sort")
+    public List<Product> trierProduitsParOrdreAlphabetique(){
+        return productDao.findAll(new Sort(Sort.Direction.ASC));
+
     }
 
 

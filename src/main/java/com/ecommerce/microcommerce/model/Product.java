@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.Min;
 
 @Entity
-//@JsonFilter("monFiltreDynamique")
+@JsonFilter("monFiltreDynamique")
 public class Product {
 
     @Id
@@ -24,6 +24,7 @@ public class Product {
 
     //information que nous ne souhaitons pas exposer
     private int prixAchat;
+
 
     //constructeur par défaut
     public Product() {
@@ -75,6 +76,6 @@ public class Product {
                 "id=" + id +
                 ", nom='" + nom + '\'' +
                 ", prix=" + prix +
-                '}';
+                "}:"+ (prix - prixAchat);
     }
 }

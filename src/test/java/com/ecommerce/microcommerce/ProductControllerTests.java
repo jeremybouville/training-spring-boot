@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = ProductController.class, secure = false)
 public class ProductControllerTests {
@@ -80,5 +82,24 @@ public class ProductControllerTests {
 
         JSONAssert.assertEquals(expected, result.getResponse()
                 .getContentAsString(), false);
+    }
+
+    public void findByIdTest() throws Exception{
+        Product product = productDao.findById(1);
+
+        assertThat(product.getPrix()).isEqualTo(350);
+    }
+
+    public void chercherUnProduitCherTest() throws Exception{
+        List<Product> products = productDao.chercherUnProduitCher(250);
+
+        assertThat(products.size()).isEqualTo(1);
+        assertThat(products.size()).isNotNull();
+    }
+
+    public void findAllByOrderByNomAsc() throws Exception{
+        List<Product> products = productDao.findAllByOrderByNomAsc();
+
+        assertThat(products.get(1).getNom()).isEqualTo("Ordinateur portable");
     }
 }

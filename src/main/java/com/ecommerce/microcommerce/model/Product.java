@@ -76,6 +76,6 @@ public class Product {
                 "id=" + id +
                 ", nom='" + nom + '\'' +
                 ", prix=" + prix +
-                "}:"+ (prix - prixAchat);
+                "}";
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import net.minidev.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,15 @@ public class MicrocommerceApplicationTests {
 	@Test
 	public void getProductsTest() throws Exception{
 		List<Product> listTest = new ArrayList<Product>();
+
+		Product product = new Product();
+		product.setId(2);
+		product.setNom("test2");
+		product.setPrix(250);
+		product.setPrixAchat(40);
+
 		listTest.add(new Product(1, "test1", 100, 20));
-		listTest.add(new Product(2, "test2", 250, 40));
+		listTest.add(product);
 
 		given(productDao.findAll()).willReturn(listTest);
 
@@ -87,6 +95,43 @@ public class MicrocommerceApplicationTests {
 	}
 
 	@Test
+	public void updateProductTest() throws Exception{
+		mockMvc.perform(post("/Produits")
+		.contentType(MediaType.APPLICATION_JSON)
+		.characterEncoding("UTF-8")
+		.content("{\"id\":\" 1 \", \"nom\":\"test\",\"prix\": 50, \"prixAchat\": 20}"))
+				.andExpect(status().is(204));
+	}
+
+	@Test
+	public void requestTestTest() throws Exception{
+		List<Product> listTest = new ArrayList<Product>();
+		listTest.add(new Product(1, "test1", 250, 20));
+		listTest.add(new Product(2, "test2", 400, 40));
+
+		given(productDao.searchExpensiveProduct(150)).willReturn(listTest);
+
+		mockMvc.perform(get("/test/produits/150")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(2)))
+				.andExpect(jsonPath("$[0].prix", is(250)))
+				.andExpect(jsonPath("$[1].prix", is(400)));
+	}
+
+	@Test
+	public void calcProductMarginTest() throws Exception{
+		List<Product> listTest = new ArrayList<Product>();
+		listTest.add(new Product(1, "test1", 250, 20));
+		listTest.add(new Product(2, "test2", 400, 40));
+
+		given(productDao.findAll()).willReturn(listTest);
+
+		mockMvc.perform(get("/AdminProduits")
+			.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
 	public void searchExpensiveProductTest() throws Exception{
 
 		List<Product> listTest = new ArrayList<Product>();
@@ -102,7 +147,7 @@ public class MicrocommerceApplicationTests {
 	}
 
 	@Test
-	public void findAllByOrderByNomAsc() throws Exception{
+	public void findAllByOrderByNomAscTest() throws Exception{
 		List<Product> listTest = new ArrayList<Product>();
 		listTest.add(new Product(1, "arbre", 250, 20));
 		listTest.add(new Product(2, "ordinateur", 400, 40));

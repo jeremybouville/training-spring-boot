@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -34,7 +35,7 @@ public class ProductController {
     //Récupérer la liste des produits
     @ApiOperation(value = "Liste l'ensemble des produits.")
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
-    public MappingJacksonValue listeProduits() {
+    public MappingJacksonValue ProductList() {
 
         Iterable<Product> produits = productDao.findAll();
 
@@ -54,7 +55,7 @@ public class ProductController {
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{id}")
 
-    public Product afficherUnProduit(@PathVariable int id) {
+    public Product getProduct(@PathVariable int id) {
 
         Product produit = productDao.findById(id);
 
@@ -69,7 +70,7 @@ public class ProductController {
     //ajouter un produit
     @ApiOperation(value = "Ajoute un produits.")
     @PostMapping(value = "/Produits")
-    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
+    public ResponseEntity<Void> addProduct(@Valid @RequestBody Product product) {
 
         if(product.getPrixAchat() == 0){
             throw new ProduitGratuitException("Le produit avec le nom " + product.getNom() + " que vous souhaitez insérer ne peux pas avoir un prix de vente à 0.");
@@ -90,7 +91,7 @@ public class ProductController {
 
     @ApiOperation(value = "Supprime un produit.")
     @DeleteMapping (value = "/Produits/{id}")
-    public void supprimerProduit(@PathVariable int id) {
+    public void deleteProduct(@PathVariable int id) {
 
         productDao.delete(id);
     }
@@ -105,21 +106,24 @@ public class ProductController {
 
     //Pour les tests
     @GetMapping(value = "test/produits/{prix}")
-    public List<Product>  testeDeRequetes(@PathVariable int prix) {
+    public List<Product> requestTest(@PathVariable int prix) {
 
         return productDao.searchExpensiveProduct(prix);
     }
 
     @ApiOperation(value = "Calcule la marge de revente d'un produit.")
     @GetMapping(value = "/AdminProduits")
-    public String calculerMargeProduit(){
-        List<Product> products = productDao.findAll();
-        return products.toString();
+    public HashMap<String, Integer> calcProductMargin(){
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for(Product product : productDao.findAll()){
+            map.put(product.toString(), product.getPrix() - product.getPrixAchat());
+        }
+        return map;
     }
 
     @ApiOperation(value = "Liste les produits tout en effectuant un tri par ordre alphabétique sur leur nom.")
     @GetMapping(value= "/Produits/sort")
-    public List<Product> trierProduitsParOrdreAlphabetique(){
+    public List<Product> sortProductsByNomAsc(){
         return productDao.findAllByOrderByNomAsc();
 
     }

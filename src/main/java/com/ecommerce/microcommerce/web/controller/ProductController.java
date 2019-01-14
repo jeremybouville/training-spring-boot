@@ -110,7 +110,7 @@ public class ProductController {
 
     @GetMapping(value= "/Produits/sort")
     public List<Product> trierProduitsParOrdreAlphabetique(){
-        return productDao.findAll(new Sort(Sort.Direction.ASC));
+        return productDao.findAllByOrderByNomAsc();
 
     }
 

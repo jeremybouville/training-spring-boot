@@ -107,7 +107,7 @@ public class ProductController {
     @GetMapping(value = "test/produits/{prix}")
     public List<Product>  testeDeRequetes(@PathVariable int prix) {
 
-        return productDao.chercherUnProduitCher(prix);
+        return productDao.searchExpensiveProduct(prix);
     }
 
     @ApiOperation(value = "Calcule la marge de revente d'un produit.")
